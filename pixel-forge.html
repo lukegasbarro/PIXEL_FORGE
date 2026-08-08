@@ -473,6 +473,95 @@
     z-index:50;
   }
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ---------- Isometric modal ---------- */
+  .modal-overlay{
+    position:fixed; inset:0;
+    background:rgba(6,5,12,0.78);
+    backdrop-filter:blur(2px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-box{
+    width:100%;
+    max-width:980px;
+    max-height:92vh;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+  .modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:14px 16px;
+    border-bottom:1px solid var(--border);
+    background:linear-gradient(180deg, var(--panel), var(--panel-2));
+    flex:none;
+  }
+  .modal-head h2{
+    font-family:var(--font-pixel);
+    font-size:12px;
+    margin:0;
+    letter-spacing:1px;
+  }
+  .modal-close{
+    background:transparent;
+    border:1px solid var(--border);
+    color:var(--muted);
+    width:30px;height:30px;
+    border-radius:var(--radius);
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+  }
+  .modal-close:hover{ color:var(--text); border-color:var(--muted-dim); }
+  .modal-body{
+    display:grid;
+    grid-template-columns:1fr 240px;
+    gap:0;
+    overflow:hidden;
+    flex:1;
+    min-height:0;
+  }
+  @media (max-width: 760px){
+    .modal-body{ grid-template-columns:1fr; overflow-y:auto; }
+  }
+  .iso-preview-wrap{
+    background:
+      repeating-conic-gradient(#25213a 0% 25%, #1b1830 0% 50%) 0 0/22px 22px;
+    overflow:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    min-height:340px;
+  }
+  #isoCanvas{ image-rendering:pixelated; image-rendering:crisp-edges; }
+  .iso-controls{
+    border-left:1px solid var(--border);
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    overflow-y:auto;
+  }
+  .iso-controls .field-row{ margin-bottom:0; }
+  .iso-controls input[type=range]{ width:100%; accent-color:var(--cyan); }
+  .iso-empty-note{
+    font-size:11px;
+    color:var(--muted-dim);
+    line-height:1.6;
+    text-align:center;
+    max-width:260px;
+  }
 </style>
 </head>
 <body>
@@ -619,6 +708,15 @@
       </div>
 
       <div class="panel-block">
+        <p class="panel-title">Isometric</p>
+        <p style="font-size:11px; color:var(--muted-dim); margin:0 0 12px; line-height:1.5;">Project your flat artwork into an isometric tile view, as flat tilted tiles or extruded 3D blocks.</p>
+        <button class="btn primary" id="btnOpenIso" style="width:100%; justify-content:center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5"/><path d="m3 17 9 5 9-5"/></svg>
+          Convert to Isometric
+        </button>
+      </div>
+
+      <div class="panel-block">
         <p class="panel-title">Export</p>
         <div class="field-row">
           <label for="exportScale">Pixel scale</label>
@@ -668,6 +766,63 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="isoModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>ISOMETRIC PREVIEW</h2>
+      <button class="modal-close" id="isoClose" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="iso-preview-wrap" id="isoPreviewWrap">
+        <canvas id="isoCanvas"></canvas>
+      </div>
+      <div class="iso-controls">
+        <div class="panel-block" style="padding:0; border:0; background:transparent;">
+          <p class="panel-title" style="margin-bottom:10px;">Projection</p>
+          <div class="radio-row" id="isoModeRow">
+            <div class="radio-btn active" data-mode="flat">Flat tiles</div>
+            <div class="radio-btn" data-mode="extruded">3D blocks</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="field-row">
+            <label for="isoTileSize">Tile size</label>
+            <span class="val" id="isoTileSizeVal">16px</span>
+          </div>
+          <input type="range" id="isoTileSize" min="4" max="32" value="16" step="1">
+        </div>
+
+        <div id="isoHeightRow" style="display:none;">
+          <div class="field-row">
+            <label for="isoHeight">Block height</label>
+            <span class="val" id="isoHeightVal">14px</span>
+          </div>
+          <input type="range" id="isoHeight" min="2" max="48" value="14" step="1">
+        </div>
+
+        <div>
+          <div class="field-row">
+            <label for="isoShade">Side shading</label>
+            <span class="val" id="isoShadeVal">55%</span>
+          </div>
+          <input type="range" id="isoShade" min="0" max="100" value="55" step="5">
+        </div>
+
+        <label class="toggle-chip on" style="width:100%; justify-content:center;" id="isoChipOutline">
+          <input type="checkbox" id="isoOutline" checked> Pixel outlines
+        </label>
+
+        <button class="btn primary" id="btnExportIso" style="width:100%; justify-content:center; margin-top:auto;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>
+          Download Isometric PNG
+        </button>
+        <p class="export-preview" id="isoExportPreview" style="margin-top:0;">Output: — × — px</p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 (function(){
@@ -1158,6 +1313,11 @@
     const tag = (e.target.tagName || '').toLowerCase();
     if(tag==='input') return;
 
+    if(isoModalOpen){
+      if(e.key === 'Escape') closeIsoModal();
+      return;
+    }
+
     if(e.ctrlKey || e.metaKey){
       if(e.key.toLowerCase()==='z' && e.shiftKey){ e.preventDefault(); redo(); return; }
       if(e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); return; }
@@ -1189,6 +1349,205 @@
     const btn = document.querySelector(`#brushSizeRow .radio-btn[data-size="${sizes[idx]}"]`);
     if(btn) btn.click();
   }
+
+  /* ---------------- Isometric conversion ---------------- */
+  const isoModal = document.getElementById('isoModal');
+  const isoCanvas = document.getElementById('isoCanvas');
+  const isoCtx = isoCanvas.getContext('2d');
+  const btnOpenIso = document.getElementById('btnOpenIso');
+  const isoClose = document.getElementById('isoClose');
+  const isoModeRow = document.getElementById('isoModeRow');
+  const isoTileSize = document.getElementById('isoTileSize');
+  const isoTileSizeVal = document.getElementById('isoTileSizeVal');
+  const isoHeightRow = document.getElementById('isoHeightRow');
+  const isoHeight = document.getElementById('isoHeight');
+  const isoHeightVal = document.getElementById('isoHeightVal');
+  const isoShade = document.getElementById('isoShade');
+  const isoShadeVal = document.getElementById('isoShadeVal');
+  const isoOutline = document.getElementById('isoOutline');
+  const isoChipOutline = document.getElementById('isoChipOutline');
+  const btnExportIso = document.getElementById('btnExportIso');
+  const isoExportPreview = document.getElementById('isoExportPreview');
+
+  let isoMode = 'flat';
+  let isoModalOpen = false;
+
+  function hexToRgb(hex){
+    const h = hex.replace('#','');
+    return {
+      r: parseInt(h.substring(0,2),16),
+      g: parseInt(h.substring(2,4),16),
+      b: parseInt(h.substring(4,6),16)
+    };
+  }
+  function rgbToHex(r,g,b){
+    const c = v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');
+    return '#'+c(r)+c(g)+c(b);
+  }
+  function shadeColor(hex, pct){
+    // pct negative darkens, positive lightens, range roughly -1..1
+    const {r,g,b} = hexToRgb(hex);
+    let nr,ng,nb;
+    if(pct < 0){
+      nr = r*(1+pct); ng = g*(1+pct); nb = b*(1+pct);
+    } else {
+      nr = r+(255-r)*pct; ng = g+(255-g)*pct; nb = b+(255-b)*pct;
+    }
+    return rgbToHex(nr,ng,nb);
+  }
+
+  function computeIsoLayout(tileSize, blockHeight){
+    const tileW = tileSize*2;
+    const tileH = tileSize;
+    const padding = tileW;
+    const width = Math.ceil((gridW+gridH)*tileW/2 + padding*2);
+    const heightPx = Math.ceil((gridW+gridH)*tileH/2 + tileH + blockHeight + padding*2);
+    const offsetX = gridH*tileW/2 + padding;
+    const offsetY = padding;
+    return {tileW, tileH, width, heightPx, offsetX, offsetY};
+  }
+
+  function drawIsoCube(g, cx, cy, tileW, tileH, height, color, shadeStrength, outline){
+    const top = {x:cx, y:cy};
+    const right = {x:cx+tileW/2, y:cy+tileH/2};
+    const bottom = {x:cx, y:cy+tileH};
+    const left = {x:cx-tileW/2, y:cy+tileH/2};
+
+    if(height > 0){
+      const colorLeft = shadeColor(color, -shadeStrength*0.6);
+      const colorRight = shadeColor(color, -shadeStrength*0.32);
+
+      g.fillStyle = colorLeft;
+      g.beginPath();
+      g.moveTo(left.x, left.y);
+      g.lineTo(bottom.x, bottom.y);
+      g.lineTo(bottom.x, bottom.y+height);
+      g.lineTo(left.x, left.y+height);
+      g.closePath();
+      g.fill();
+      if(outline) g.stroke();
+
+      g.fillStyle = colorRight;
+      g.beginPath();
+      g.moveTo(right.x, right.y);
+      g.lineTo(bottom.x, bottom.y);
+      g.lineTo(bottom.x, bottom.y+height);
+      g.lineTo(right.x, right.y+height);
+      g.closePath();
+      g.fill();
+      if(outline) g.stroke();
+    }
+
+    g.fillStyle = color;
+    g.beginPath();
+    g.moveTo(top.x, top.y);
+    g.lineTo(right.x, right.y);
+    g.lineTo(bottom.x, bottom.y);
+    g.lineTo(left.x, left.y);
+    g.closePath();
+    g.fill();
+    if(outline) g.stroke();
+  }
+
+  function renderIsometricTo(targetCtx, targetCanvas){
+    const tileSize = parseInt(isoTileSize.value,10);
+    const extruded = isoMode === 'extruded';
+    const blockHeight = extruded ? parseInt(isoHeight.value,10) : 0;
+    const shadeStrength = parseInt(isoShade.value,10)/100;
+    const outline = isoOutline.checked;
+
+    const layout = computeIsoLayout(tileSize, blockHeight);
+    targetCanvas.width = layout.width;
+    targetCanvas.height = layout.heightPx;
+    targetCtx.clearRect(0,0,layout.width,layout.heightPx);
+    targetCtx.imageSmoothingEnabled = false;
+    targetCtx.lineWidth = 1;
+    targetCtx.strokeStyle = 'rgba(0,0,0,0.28)';
+
+    const cells = [];
+    for(let y=0;y<gridH;y++){
+      for(let x=0;x<gridW;x++){
+        const c = data[y*gridW+x];
+        if(c) cells.push({x,y,c});
+      }
+    }
+    cells.sort((a,b)=> (a.x+a.y) - (b.x+b.y));
+
+    cells.forEach(cell=>{
+      const originX = (cell.x - cell.y)*layout.tileW/2 + layout.offsetX;
+      const originY = (cell.x + cell.y)*layout.tileH/2 + layout.offsetY;
+      drawIsoCube(targetCtx, originX, originY, layout.tileW, layout.tileH, blockHeight, cell.c, shadeStrength, outline);
+    });
+
+    return layout;
+  }
+
+  function renderIsoPreview(){
+    const layout = renderIsometricTo(isoCtx, isoCanvas);
+    isoExportPreview.textContent = `Output: ${layout.width} × ${layout.heightPx} px`;
+  }
+
+  function openIsoModal(){
+    if(!data.some(v=>v)){
+      showToast('Draw something first — canvas is empty');
+      return;
+    }
+    isoModal.classList.add('show');
+    isoModalOpen = true;
+    renderIsoPreview();
+  }
+  function closeIsoModal(){
+    isoModal.classList.remove('show');
+    isoModalOpen = false;
+  }
+
+  btnOpenIso.addEventListener('click', openIsoModal);
+  isoClose.addEventListener('click', closeIsoModal);
+  isoModal.addEventListener('click', e=>{ if(e.target === isoModal) closeIsoModal(); });
+
+  document.querySelectorAll('#isoModeRow .radio-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('#isoModeRow .radio-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      isoMode = btn.dataset.mode;
+      isoHeightRow.style.display = isoMode==='extruded' ? 'block' : 'none';
+      renderIsoPreview();
+    });
+  });
+
+  isoTileSize.addEventListener('input', ()=>{
+    isoTileSizeVal.textContent = isoTileSize.value+'px';
+    renderIsoPreview();
+  });
+  isoHeight.addEventListener('input', ()=>{
+    isoHeightVal.textContent = isoHeight.value+'px';
+    renderIsoPreview();
+  });
+  isoShade.addEventListener('input', ()=>{
+    isoShadeVal.textContent = isoShade.value+'%';
+    renderIsoPreview();
+  });
+  isoOutline.addEventListener('change', ()=>{
+    isoChipOutline.classList.toggle('on', isoOutline.checked);
+    renderIsoPreview();
+  });
+
+  btnExportIso.addEventListener('click', ()=>{
+    const out = document.createElement('canvas');
+    const octx = out.getContext('2d');
+    const layout = renderIsometricTo(octx, out);
+    out.toBlob(blob=>{
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'pixel-art-isometric.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(()=>URL.revokeObjectURL(url), 2000);
+      showToast('Isometric PNG exported ('+layout.width+'×'+layout.heightPx+')');
+    }, 'image/png');
+  });
 
   /* ---------------- Boot ---------------- */
   buildPalette();
