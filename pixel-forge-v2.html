@@ -563,30 +563,141 @@
     max-width:260px;
   }
 
-  /* ---------- AI Artist V2 ---------- */
-  .ai-launch{position:relative}
-  .ai-launch::after{content:'AI';position:absolute;top:-5px;right:-5px;font-size:7px;line-height:12px;min-width:12px;height:12px;text-align:center;border-radius:8px;background:var(--pink);color:#0f0d1a;font-weight:800}
-  .ai-drawer{position:fixed;top:0;right:0;width:360px;max-width:94vw;height:100vh;background:rgba(15,13,26,.98);border-left:1px solid var(--border);box-shadow:-18px 0 50px rgba(0,0,0,.35);z-index:80;transform:translateX(102%);transition:transform .22s ease;display:flex;flex-direction:column}
-  .ai-drawer.open{transform:translateX(0)}
-  .ai-head{padding:16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-  .ai-title{font-size:13px;font-weight:800;letter-spacing:1.5px}.ai-title .accent{color:var(--cyan)}
-  .ai-close{background:none;border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:var(--radius);cursor:pointer}
-  .ai-body{padding:16px;overflow:auto;display:flex;flex-direction:column;gap:14px;min-height:0}
-  .ai-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px}
-  .ai-input,.ai-textarea{width:100%;box-sizing:border-box;background:var(--panel-3);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);padding:9px;font:inherit;font-size:12px;outline:none}
-  .ai-input:focus,.ai-textarea:focus{border-color:var(--cyan-dim)}
-  .ai-textarea{min-height:92px;resize:vertical;line-height:1.5}
-  .ai-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-  .ai-status{border:1px solid var(--border);background:var(--panel-2);border-radius:var(--radius);padding:10px;font-size:11px;color:var(--muted);line-height:1.5}
-  .ai-status .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#777;margin-right:6px}.ai-status.connected .dot{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}.ai-status.busy .dot{background:var(--amber);box-shadow:0 0 8px var(--amber)}.ai-status.error .dot{background:var(--pink)}
-  .ai-progress{height:6px;background:var(--panel-3);border-radius:4px;overflow:hidden;border:1px solid var(--border)}.ai-progress>div{height:100%;width:0;background:var(--cyan);transition:width .08s linear}
-  .ai-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ai-actions .btn{justify-content:center}
-  .ai-log{height:180px;overflow:auto;background:#0b0a12;border:1px solid var(--border);border-radius:var(--radius);padding:9px;font:10px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--muted)}
-  .ai-log .ok{color:var(--cyan)}.ai-log .warn{color:var(--amber)}.ai-log .err{color:var(--pink)}
-  .ai-help{font-size:10px;color:var(--muted-dim);line-height:1.55}.ai-help code{color:var(--cyan)}
-  .ai-overlay{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:70;display:none}.ai-overlay.show{display:block}
-  @media(max-width:760px){.ai-drawer{width:100%}.ai-overlay{display:none!important}}
+  /* ---------- Panel tabs ---------- */
+  .panel-tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:2px;
+  }
+  .panel-tab{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    color:var(--muted);
+    padding:10px 8px;
+    font-size:11px;
+    font-weight:600;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    transition:all .12s ease;
+  }
+  .panel-tab:hover{ color:var(--text); border-color:var(--muted-dim); }
+  .panel-tab.active{
+    color:var(--cyan);
+    border-color:var(--cyan-dim);
+    background:rgba(76,224,210,0.08);
+  }
+  .panel-tab svg{ width:13px; height:13px; }
+  .tab-content{ display:flex; flex-direction:column; gap:12px; }
+  .tab-content[hidden]{ display:none; }
 
+  /* ---------- AI Studio panel ---------- */
+  .ai-panel{
+    border-color:var(--border);
+    background:var(--panel);
+  }
+  .ai-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    background:rgba(76,224,210,0.14);
+    border:1px solid var(--cyan-dim);
+    color:var(--cyan);
+    font-family:var(--font-pixel);
+    font-size:8px;
+    letter-spacing:1px;
+    padding:3px 7px;
+    border-radius:2px;
+  }
+  .ai-panel label.field-label{
+    display:block;
+    font-size:10px;
+    color:var(--muted);
+    letter-spacing:0.5px;
+    margin-bottom:6px;
+  }
+  .ai-panel input[type=text], .ai-panel textarea{
+    width:100%;
+    background:var(--panel-3);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    color:var(--text);
+    padding:8px 9px;
+    font-size:12px;
+    font-family:var(--font-mono);
+    resize:vertical;
+  }
+  .ai-panel textarea{ min-height:64px; line-height:1.5; }
+  .ai-field{ margin-bottom:12px; }
+  .ai-two-col{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+  .chip-row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+  .prompt-chip{
+    font-size:10px;
+    color:var(--muted);
+    background:var(--panel-3);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:5px 10px;
+    cursor:pointer;
+  }
+  .prompt-chip:hover{ color:var(--text); border-color:var(--muted-dim); }
+  .ai-actions{ display:flex; gap:8px; margin-top:4px; }
+  .ai-actions .btn{ flex:1; justify-content:center; }
+  .ai-status{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:12px;
+    min-height:18px;
+  }
+  .ai-status.error{ color:var(--magenta); }
+  .ai-status.ok{ color:var(--cyan); }
+  .spinner{
+    width:11px;height:11px;
+    border-radius:50%;
+    border:2px solid var(--border);
+    border-top-color:var(--cyan);
+    animation:spin .7s linear infinite;
+    flex:none;
+    display:none;
+  }
+  .spinner.show{ display:inline-block; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .ai-log-details{ margin-top:10px; }
+  .ai-log-details summary{
+    font-size:10px;
+    color:var(--muted-dim);
+    cursor:pointer;
+    letter-spacing:0.5px;
+  }
+  .ai-log{
+    margin-top:8px;
+    max-height:140px;
+    overflow-y:auto;
+    background:var(--bg-deep);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:8px;
+    font-size:10.5px;
+    line-height:1.6;
+    color:var(--muted-dim);
+    white-space:pre-wrap;
+    word-break:break-all;
+  }
+  .ai-log .cmd{ color:var(--cyan-dim); }
+  .ai-hint{
+    font-size:10.5px;
+    color:var(--muted-dim);
+    line-height:1.6;
+    margin-top:6px;
+  }
 </style>
 </head>
 <body>
@@ -624,7 +735,6 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/></svg>
         Export PNG
       </button>
-      <button class="btn ai-launch" id="btnAIOpen" title="Open AI Artist">✦ AI Artist</button>
     </div>
   </header>
 
@@ -686,6 +796,19 @@
 
     <!-- RIGHT PANEL -->
     <div class="panel">
+
+      <div class="panel-tabs" role="tablist" aria-label="Panel sections">
+        <button class="panel-tab active" data-tab="tools" role="tab" aria-selected="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 2 4 4-13 13-5 1 1-5Z"/></svg>
+          Editor
+        </button>
+        <button class="panel-tab" data-tab="ai" role="tab" aria-selected="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4"/><path d="m6.4 6.4 2.8 2.8"/><path d="M2 12h4"/><path d="m6.4 17.6 2.8-2.8"/><path d="M12 18v4"/><path d="m14.8 14.8 2.8 2.8"/><path d="M18 12h4"/><path d="m14.8 9.2 2.8-2.8"/></svg>
+          AI Studio
+        </button>
+      </div>
+
+      <div class="tab-content" data-tabcontent="tools">
 
       <div class="panel-block">
         <p class="panel-title">Color</p>
@@ -785,50 +908,77 @@
         </div>
       </div>
 
+      </div>
+
+      <div class="tab-content" data-tabcontent="ai" hidden>
+
+      <div class="panel-block ai-panel">
+        <p class="panel-title">AI Studio</p>
+
+        <div class="ai-two-col">
+          <div>
+            <label class="field-label" for="aiEndpoint">Endpoint URL</label>
+            <input type="text" id="aiEndpoint" value="http://127.0.0.1:8080/v1/chat/completions">
+          </div>
+          <div>
+            <label class="field-label" for="aiModel">Model (optional)</label>
+            <input type="text" id="aiModel" placeholder="e.g. qwen2.5-coder:7b">
+          </div>
+        </div>
+
+        <div class="ai-field">
+          <label class="field-label" for="aiPrompt">What should it draw?</label>
+          <textarea id="aiPrompt" placeholder="e.g. a small red mushroom with white spots">a cute pixel art cat sitting down</textarea>
+          <div class="chip-row" id="promptChips">
+            <span class="prompt-chip" data-prompt="a small red mushroom with white spots">mushroom</span>
+            <span class="prompt-chip" data-prompt="a pixel art sword with a blue hilt">sword</span>
+            <span class="prompt-chip" data-prompt="a tiny spaceship, side view">spaceship</span>
+            <span class="prompt-chip" data-prompt="a red heart with a shine highlight">heart</span>
+            <span class="prompt-chip" data-prompt="a slice of pizza">pizza</span>
+            <span class="prompt-chip" data-prompt="a friendly ghost, simple and round">ghost</span>
+          </div>
+        </div>
+
+        <label class="toggle-chip on" style="width:100%; justify-content:center; margin-bottom:12px;" id="chipPaletteLock">
+          <input type="checkbox" id="aiPaletteLock" checked> Restrict to current palette
+        </label>
+
+        <div class="ai-field">
+          <div class="field-row">
+            <label for="aiSpeed">Draw speed</label>
+            <span class="val" id="aiSpeedVal">Medium</span>
+          </div>
+          <input type="range" id="aiSpeed" min="1" max="5" value="3" step="1">
+        </div>
+
+        <div class="ai-actions">
+          <button class="btn primary" id="btnAiGenerate">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><path d="M12 2v4"/><path d="m6.4 6.4 2.8 2.8"/><path d="M2 12h4"/><path d="m6.4 17.6 2.8-2.8"/><path d="M12 18v4"/><path d="m14.8 14.8 2.8 2.8"/><path d="M18 12h4"/><path d="m14.8 9.2 2.8-2.8"/></svg>
+            Generate
+          </button>
+          <button class="btn danger" id="btnAiStop" disabled>Stop</button>
+        </div>
+
+        <div class="ai-status" id="aiStatus">
+          <span class="spinner" id="aiSpinner"></span>
+          <span id="aiStatusText">Not connected yet</span>
+        </div>
+
+        <p class="ai-hint">Works with any OpenAI-compatible <code>/v1/chat/completions</code> endpoint (llama.cpp server, LM Studio, vLLM) or Ollama's native streaming API. Best on grids ≤ 32×32. See the README for CORS setup — local servers often block browser requests by default.</p>
+
+        <details class="ai-log-details">
+          <summary>Show raw output log</summary>
+          <div class="ai-log" id="aiLog">Nothing generated yet.</div>
+        </details>
+      </div>
+
+      </div>
+
     </div>
   </div>
 
   <footer class="credits">PIXEL FORGE — runs entirely in your browser. Nothing is uploaded anywhere.</footer>
 </div>
-
-
-<div class="ai-overlay" id="aiOverlay"></div>
-<aside class="ai-drawer" id="aiDrawer" aria-label="AI Artist">
-  <div class="ai-head">
-    <div class="ai-title">AI<span class="accent">_</span>ARTIST</div>
-    <button class="ai-close" id="aiClose" title="Close">✕</button>
-  </div>
-  <div class="ai-body">
-    <div>
-      <label class="ai-label" for="aiEndpoint">Local LLM endpoint</label>
-      <input class="ai-input" id="aiEndpoint" value="http://localhost:11434/api/generate" spellcheck="false">
-    </div>
-    <div class="ai-row">
-      <div><label class="ai-label" for="aiProvider">API</label><select id="aiProvider"><option value="openai" selected>OpenAI-compatible</option><option value="ollama">Ollama</option></select></div>
-      <div><label class="ai-label" for="aiModel">Model</label><input class="ai-input" id="aiModel" value="" placeholder="Enter your llama.cpp model name" spellcheck="false"></div>
-    </div>
-    <div>
-      <label class="ai-label" for="aiPrompt">What should I draw?</label>
-      <textarea class="ai-textarea" id="aiPrompt" placeholder="A tiny pixel-art wizard with a blue robe, gold staff and purple hat..."></textarea>
-    </div>
-    <div class="ai-row">
-      <div><label class="ai-label" for="aiSpeed">Draw delay</label><select id="aiSpeed"><option value="0">Instant</option><option value="12">Fast</option><option value="35" selected>Normal</option><option value="80">Slow</option></select></div>
-      <div><label class="ai-label" for="aiClear">Canvas</label><select id="aiClear"><option value="keep">Keep artwork</option><option value="clear">Clear first</option></select></div>
-    </div>
-    <div class="ai-status" id="aiStatus"><span class="dot"></span><span id="aiStatusText">Not connected</span></div>
-    <div class="ai-progress"><div id="aiProgressBar"></div></div>
-    <div class="ai-actions">
-      <button class="btn" id="aiTest">Test Connection</button>
-      <button class="btn primary" id="aiDraw">✦ Draw</button>
-    </div>
-    <button class="btn danger" id="aiStop" disabled style="justify-content:center">Stop Drawing</button>
-    <div>
-      <div class="ai-label">Live draw log</div>
-      <div class="ai-log" id="aiLog"></div>
-    </div>
-    <div class="ai-help">The model is asked for newline-delimited JSON drawing commands. Supported commands are <code>pixel</code>, <code>rect</code>, <code>line</code>, <code>fill</code>, and <code>clear</code>. Nothing is sent anywhere except the endpoint you enter.</div>
-  </div>
-</aside>
 
 <div class="toast" id="toast"></div>
 
@@ -1614,6 +1764,300 @@
     }, 'image/png');
   });
 
+  /* ---------------- AI Studio ---------------- */
+  const aiEndpoint = document.getElementById('aiEndpoint');
+  const aiModel = document.getElementById('aiModel');
+  const aiPrompt = document.getElementById('aiPrompt');
+  const promptChips = document.getElementById('promptChips');
+  const aiPaletteLock = document.getElementById('aiPaletteLock');
+  const chipPaletteLock = document.getElementById('chipPaletteLock');
+  const aiSpeed = document.getElementById('aiSpeed');
+  const aiSpeedVal = document.getElementById('aiSpeedVal');
+  const btnAiGenerate = document.getElementById('btnAiGenerate');
+  const btnAiStop = document.getElementById('btnAiStop');
+  const aiStatusEl = document.getElementById('aiStatus');
+  const aiStatusText = document.getElementById('aiStatusText');
+  const aiSpinner = document.getElementById('aiSpinner');
+  const aiLog = document.getElementById('aiLog');
+
+  let aiAbortController = null;
+  let aiGenerating = false;
+  let aiPixelQueue = [];
+  let aiDrainTimer = null;
+  let aiPixelsReceived = 0;
+  let aiPixelsDrawn = 0;
+  let aiLogLines = [];
+  let aiUndoSnapshotted = false;
+
+  const SPEED_LABELS = {1:'Very slow', 2:'Slow', 3:'Medium', 4:'Fast', 5:'Instant-ish'};
+  const SPEED_PIXELS_PER_TICK = {1:1, 2:2, 3:4, 4:10, 5:40};
+
+  promptChips.addEventListener('click', e=>{
+    const chip = e.target.closest('.prompt-chip');
+    if(!chip) return;
+    aiPrompt.value = chip.dataset.prompt;
+    aiPrompt.focus();
+  });
+
+  aiPaletteLock.addEventListener('change', ()=>{
+    chipPaletteLock.classList.toggle('on', aiPaletteLock.checked);
+  });
+
+  aiSpeed.addEventListener('input', ()=>{
+    aiSpeedVal.textContent = SPEED_LABELS[aiSpeed.value];
+  });
+
+  function setAiStatus(text, kind){
+    aiStatusText.textContent = text;
+    aiStatusEl.classList.remove('error','ok');
+    if(kind) aiStatusEl.classList.add(kind);
+  }
+
+  function logRaw(line, isCommand){
+    aiLogLines.push(isCommand ? `<span class="cmd">${escapeHtml(line)}</span>` : escapeHtml(line));
+    if(aiLogLines.length > 300) aiLogLines = aiLogLines.slice(-300);
+    aiLog.innerHTML = aiLogLines.join('\n');
+    aiLog.scrollTop = aiLog.scrollHeight;
+  }
+  function escapeHtml(s){
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function buildSystemPrompt(){
+    let paletteLine = 'You may use any hex color that suits the drawing.';
+    if(aiPaletteLock.checked){
+      const colors = Array.from(new Set([...PALETTE, ...recentColors, currentColor]));
+      paletteLine = `Only use these exact hex colors: ${colors.join(', ')}. Use "none" for transparency.`;
+    }
+    return [
+      `You are a pixel art drawing engine. You draw ONLY by emitting a strict, machine-readable stream of pixel commands.`,
+      ``,
+      `CANVAS: ${gridW} x ${gridH} pixels. Coordinate (0,0) is the top-left pixel. x runs 0 to ${gridW-1} left-to-right. y runs 0 to ${gridH-1} top-to-bottom.`,
+      ``,
+      `OUTPUT FORMAT — one command per line, and ONLY this. No prose, no markdown, no code fences, no explanations:`,
+      `x,y,#RRGGBB     -> set pixel (x,y) to that hex color`,
+      `x,y,none        -> leave pixel (x,y) transparent`,
+      ``,
+      `Rules:`,
+      `- Emit one line per pixel. Never use ranges, loops, or shorthand — every pixel needs its own line.`,
+      `- You do not need to cover the whole canvas, only the pixels that matter.`,
+      `- Stay within canvas bounds at all times.`,
+      `- ${paletteLine}`,
+      `- Plan the silhouette first, then emit base shapes, then details, then highlights, so the drawing looks reasonable even if cut off early.`,
+      `- When completely finished, output a final line containing only: DONE`
+    ].join('\n');
+  }
+
+  const CMD_REGEX = /(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(#[0-9a-fA-F]{6}|none|transparent)|(#[0-9a-fA-F]{6}|none|transparent)\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/gi;
+
+  function handleCommandMatch(match){
+    let x,y,colorRaw;
+    if(match[1] !== undefined){
+      x = parseInt(match[1],10);
+      y = parseInt(match[2],10);
+      colorRaw = match[3];
+    } else {
+      colorRaw = match[4];
+      x = parseInt(match[5],10);
+      y = parseInt(match[6],10);
+    }
+    logRaw(match[0], true);
+    const lower = colorRaw.toLowerCase();
+    const color = (lower === 'none' || lower === 'transparent') ? null : colorRaw;
+    if(x < 0 || y < 0 || x >= gridW || y >= gridH) return;
+    aiPixelQueue.push({x,y,color});
+    aiPixelsReceived++;
+    updateAiStatusLine();
+  }
+
+  function updateAiStatusLine(){
+    if(aiGenerating || aiPixelQueue.length){
+      setAiStatus(`Drawing… ${aiPixelsDrawn}/${aiPixelsReceived} pixels`, 'ok');
+    }
+  }
+
+  function startAiDrainLoop(){
+    if(aiDrainTimer) return;
+    aiDrainTimer = setInterval(()=>{
+      const perTick = SPEED_PIXELS_PER_TICK[aiSpeed.value] || 4;
+      let n = perTick;
+      let changed = false;
+      while(n-- > 0 && aiPixelQueue.length){
+        const p = aiPixelQueue.shift();
+        setCell(p.x, p.y, p.color);
+        aiPixelsDrawn++;
+        changed = true;
+      }
+      if(changed) render();
+      updateAiStatusLine();
+      if(!aiGenerating && aiPixelQueue.length === 0){
+        clearInterval(aiDrainTimer);
+        aiDrainTimer = null;
+        finishAiDrawing();
+      }
+    }, 30);
+  }
+
+  function finishAiDrawing(){
+    updateHistoryButtons();
+    if(aiPixelsDrawn > 0){
+      setAiStatus(`Done — ${aiPixelsDrawn} pixels drawn`, 'ok');
+      showToast('AI finished drawing');
+    } else {
+      setAiStatus('No valid pixel commands received — check the raw log', 'error');
+    }
+  }
+
+  async function runAiGeneration(){
+    const url = aiEndpoint.value.trim();
+    const prompt = aiPrompt.value.trim();
+    if(!url){ setAiStatus('Enter an endpoint URL first', 'error'); return; }
+    if(!prompt){ setAiStatus('Describe what to draw first', 'error'); return; }
+
+    aiLogLines = [];
+    aiLog.innerHTML = '';
+    aiPixelQueue = [];
+    aiPixelsReceived = 0;
+    aiPixelsDrawn = 0;
+    aiUndoSnapshotted = false;
+
+    aiGenerating = true;
+    btnAiGenerate.disabled = true;
+    btnAiStop.disabled = false;
+    aiSpinner.classList.add('show');
+    setAiStatus('Connecting…', null);
+
+    const body = {
+      model: aiModel.value.trim() || 'local-model',
+      stream: true,
+      temperature: 0.8,
+      messages: [
+        {role:'system', content: buildSystemPrompt()},
+        {role:'user', content: prompt}
+      ]
+    };
+
+    aiAbortController = new AbortController();
+    let resp;
+    try{
+      resp = await fetch(url, {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(body),
+        signal: aiAbortController.signal
+      });
+    }catch(err){
+      aiGenerating = false;
+      resetAiButtons();
+      if(err.name === 'AbortError'){
+        setAiStatus('Stopped', null);
+      } else {
+        setAiStatus('Connection failed — server unreachable or blocking CORS', 'error');
+        logRaw('Fetch error: '+err.message, false);
+      }
+      return;
+    }
+
+    if(!resp.ok || !resp.body){
+      aiGenerating = false;
+      resetAiButtons();
+      const text = await resp.text().catch(()=> '');
+      setAiStatus(`Server responded with HTTP ${resp.status}`, 'error');
+      logRaw('HTTP '+resp.status+': '+text.slice(0,400), false);
+      return;
+    }
+
+    if(!aiUndoSnapshotted){
+      pushUndo();
+      aiUndoSnapshotted = true;
+    }
+    setAiStatus('Receiving…', 'ok');
+    startAiDrainLoop();
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let sseBuffer = '';
+    let contentBuffer = '';
+    let scanIndex = 0;
+
+    function feedContent(chunk){
+      contentBuffer += chunk;
+      CMD_REGEX.lastIndex = scanIndex;
+      let match;
+      while((match = CMD_REGEX.exec(contentBuffer)) !== null){
+        handleCommandMatch(match);
+        scanIndex = CMD_REGEX.lastIndex;
+      }
+    }
+
+    try{
+      while(true){
+        const {value, done} = await reader.read();
+        if(done) break;
+        sseBuffer += decoder.decode(value, {stream:true});
+        let idx;
+        while((idx = sseBuffer.indexOf('\n')) >= 0){
+          const rawLine = sseBuffer.slice(0, idx).trim();
+          sseBuffer = sseBuffer.slice(idx+1);
+          if(!rawLine) continue;
+          const jsonStr = rawLine.startsWith('data:') ? rawLine.slice(5).trim() : rawLine;
+          if(jsonStr === '[DONE]') continue;
+          let json;
+          try{ json = JSON.parse(jsonStr); } catch(e){ continue; }
+          const delta = (json.choices && json.choices[0] && (
+                          (json.choices[0].delta && json.choices[0].delta.content) ||
+                          json.choices[0].text
+                        )) || (json.message && json.message.content) || json.response || '';
+          if(delta) feedContent(delta);
+        }
+      }
+      if(aiPixelsReceived === 0 && contentBuffer.trim()){
+        logRaw('No commands matched. Raw response follows:', false);
+        logRaw(contentBuffer.slice(0,1000), false);
+      }
+    }catch(err){
+      if(err.name === 'AbortError'){
+        logRaw('Stopped by user.', false);
+      } else {
+        logRaw('Stream error: '+err.message, false);
+        setAiStatus('Stream interrupted', 'error');
+      }
+    }finally{
+      aiGenerating = false;
+      resetAiButtons();
+      updateAiStatusLine();
+    }
+  }
+
+  function resetAiButtons(){
+    btnAiGenerate.disabled = false;
+    btnAiStop.disabled = true;
+    aiSpinner.classList.remove('show');
+  }
+
+  btnAiGenerate.addEventListener('click', runAiGeneration);
+  btnAiStop.addEventListener('click', ()=>{
+    if(aiAbortController) aiAbortController.abort();
+  });
+
+  /* ---------------- Panel tabs ---------------- */
+  const panelTabs = document.querySelectorAll('.panel-tab');
+  const tabContents = document.querySelectorAll('.tab-content');
+  panelTabs.forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      panelTabs.forEach(t=>{
+        t.classList.remove('active');
+        t.setAttribute('aria-selected','false');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      const target = tab.dataset.tab;
+      tabContents.forEach(tc=>{
+        tc.hidden = tc.dataset.tabcontent !== target;
+      });
+    });
+  });
+
   /* ---------------- Boot ---------------- */
   buildPalette();
   setColor(currentColor, true);
@@ -1622,119 +2066,6 @@
   updateExportPreview();
   resizeCanvasElement();
   updateHistoryButtons();
-
-  /* ---------------- V2 AI bridge ---------------- */
-  window.PixelForgeAPI = {
-    getSize: () => ({width:gridW, height:gridH}),
-    getData: () => data.slice(),
-    clear: () => { pushUndo(); data.fill(null); render(); },
-    setPixel: (x,y,color) => { if(inBounds(x,y)){ setCell(x,y,color); render(); } },
-    setPixels: (pixels) => { pixels.forEach(p=>{ if(p && inBounds(p.x,p.y)) setCell(p.x,p.y,p.color || null); }); render(); },
-    rect: (x,y,w,h,color) => { for(let yy=y;yy<y+h;yy++) for(let xx=x;xx<x+w;xx++) if(inBounds(xx,yy)) setCell(xx,yy,color); render(); },
-    line: (x1,y1,x2,y2,color) => { let dx=Math.abs(x2-x1), sx=x1<x2?1:-1, dy=-Math.abs(y2-y1), sy=y1<y2?1:-1, err=dx+dy; while(true){if(inBounds(x1,y1))setCell(x1,y1,color); if(x1===x2&&y1===y2)break; let e2=2*err;if(e2>=dy){err+=dy;x1+=sx}if(e2<=dx){err+=dx;y1+=sy}} render(); },
-    fill: (x,y,color) => { floodFill(x,y,color); render(); },
-    render: () => render()
-  };
-})();
-</script>
-
-<script>
-(function(){
-  'use strict';
-  const $ = id => document.getElementById(id);
-  const drawer=$('aiDrawer'), overlay=$('aiOverlay'), openBtn=$('btnAIOpen');
-  const endpoint=$('aiEndpoint'), provider=$('aiProvider'), model=$('aiModel'), prompt=$('aiPrompt');
-  const speed=$('aiSpeed'), clearMode=$('aiClear'), status=$('aiStatus'), statusText=$('aiStatusText');
-  const progress=$('aiProgressBar'), log=$('aiLog'), test=$('aiTest'), draw=$('aiDraw'), stop=$('aiStop');
-  let abortController=null, running=false, ops=0;
-  function open(){drawer.classList.add('open');overlay.classList.add('show')}
-  function close(){if(!running){drawer.classList.remove('open');overlay.classList.remove('show')}}
-  openBtn?.addEventListener('click',open); $('aiClose')?.addEventListener('click',close); overlay?.addEventListener('click',close);
-  function setStatus(text,kind=''){status.className='ai-status '+kind;statusText.textContent=text}
-  function addLog(text,kind=''){const d=document.createElement('div');d.className=kind;d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight}
-  function setBusy(v){running=v;test.disabled=v;draw.disabled=v;stop.disabled=!v;if(v)setStatus('AI is drawing…','busy')}
-  function colour(c){return typeof c==='string' && /^#[0-9a-fA-F]{3,8}$/.test(c) ? c : null}
-  function execute(op){
-    if(!op || typeof op!=='object') return false;
-    const a=window.PixelForgeAPI, n=(v,d=0)=>Number.isFinite(Number(v))?Math.trunc(Number(v)):d;
-    const x=n(op.x),y=n(op.y),c=colour(op.color);
-    if(op.op==='clear'){a.clear();return true}
-    if(op.op==='pixel' && c){a.setPixel(x,y,c);return true}
-    if(op.op==='rect' && c){a.rect(x,y,n(op.w),n(op.h),c);return true}
-    if(op.op==='line' && c){a.line(x,y,n(op.x2),n(op.y2),c);return true}
-    if(op.op==='fill' && c){a.fill(x,y,c);return true}
-    return false;
-  }
-  async function delay(){const ms=Number(speed.value);if(ms) await new Promise(r=>setTimeout(r,ms))}
-  async function consumeText(text){
-    // Accept JSONL, SSE, or fenced JSON. Extract complete JSON objects without requiring a perfect model response.
-    const matches=text.match(/\{[\s\S]*?\}(?=\s*(?:\{|$))/g)||[];
-    for(const raw of matches){
-      try{const op=JSON.parse(raw);if(execute(op)){ops++;progress.style.width=Math.min(100,ops/Math.max(1,window.PixelForgeAPI.getSize().width*window.PixelForgeAPI.getSize().height)*100)+'%';addLog('✓ '+op.op+' '+(op.x??'')+','+(op.y??''),'ok');await delay()}}
-      catch(e){}
-    }
-  }
-  function buildPrompt(){
-    const s=window.PixelForgeAPI.getSize();
-    return `You are a pixel-art drawing engine. Draw the requested image on a ${s.width}x${s.height} grid.\n`+
-      `REQUEST: ${prompt.value.trim()}\n`+
-      `Output ONLY newline-delimited JSON objects, one drawing operation per line. No markdown, no explanation.\n`+
-      `Allowed: {"op":"pixel","x":0,"y":0,"color":"#RRGGBB"}; {"op":"rect","x":0,"y":0,"w":1,"h":1,"color":"#RRGGBB"}; {"op":"line","x":0,"y":0,"x2":1,"y2":1,"color":"#RRGGBB"}; {"op":"fill","x":0,"y":0,"color":"#RRGGBB"}.\n`+
-      `Use a small cohesive palette, crisp pixel-art shapes, and stay within the grid. Build from silhouette to details.`;
-  }
-  async function requestBody(){
-    const p=provider.value;
-    if(p==='ollama') return {model:model.value.trim(),prompt:buildPrompt(),stream:true};
-    return {model:model.value.trim(),stream:true,messages:[{role:'system',content:'You are a pixel-art drawing engine. Follow the requested JSONL drawing protocol exactly.'},{role:'user',content:buildPrompt()}]};
-  }
-  async function stream(){
-    abortController=new AbortController();
-    const res=await fetch(endpoint.value.trim(),{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(await requestBody()),signal:abortController.signal});
-    if(!res.ok) throw new Error('HTTP '+res.status+' '+(await res.text()).slice(0,160));
-    if(!res.body) throw new Error('Streaming is not available from this endpoint.');
-    const reader=res.body.getReader(),decoder=new TextDecoder();let buffer='',rawBuffer='';
-    while(true){
-      const {value,done}=await reader.read(); if(done)break;
-      buffer+=decoder.decode(value,{stream:true});
-      const lines=buffer.split(/\r?\n/); buffer=lines.pop()||'';
-      for(const line of lines){
-        let text='';
-        if(provider.value==='ollama'){
-          try{const j=JSON.parse(line);text=j.response||'';if(j.done) continue}catch(e){continue}
-        } else {
-          if(!line.startsWith('data:')) continue; const payload=line.slice(5).trim(); if(payload==='[DONE]') continue;
-          try{const j=JSON.parse(payload);text=j.choices?.[0]?.delta?.content||''}catch(e){continue}
-        }
-        if(text){rawBuffer+=text; await consumeText(rawBuffer); rawBuffer='';}
-      }
-      if(abortController.signal.aborted) throw new DOMException('Stopped','AbortError');
-    }
-    if(buffer.trim()){
-      try{const j=JSON.parse(buffer);const t=provider.value==='ollama'?(j.response||''):(j.choices?.[0]?.delta?.content||'');if(t)await consumeText(t)}catch(e){}
-    }
-  }
-  async function testConnection(){
-    setStatus('Testing endpoint…','busy');addLog('> Testing '+endpoint.value,'warn');
-    try{
-      const url=endpoint.value.trim();
-      let body=provider.value==='ollama'?{model:model.value.trim(),prompt:'Reply with the single word OK.',stream:false}:{model:model.value.trim(),messages:[{role:'user',content:'Reply with the single word OK.'}],stream:false};
-      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      setStatus('Connected','connected');addLog('✓ Endpoint responded successfully.','ok');
-    }catch(e){setStatus('Connection failed','error');addLog('✗ '+e.message,'err')}
-  }
-  async function start(){
-    if(!prompt.value.trim()){addLog('! Enter a drawing prompt first.','warn');return}
-    if(clearMode.value==='clear') window.PixelForgeAPI.clear();
-    ops=0;progress.style.width='0%';log.innerHTML='';setBusy(true);addLog('> Starting AI draw…','warn');
-    try{await stream();setStatus('Draw complete','connected');addLog('✓ Finished. '+ops+' operations applied.','ok')}
-    catch(e){if(e.name==='AbortError'){setStatus('Stopped','');addLog('■ Drawing stopped by user.','warn')}else{setStatus('AI request failed','error');addLog('✗ '+e.message,'err')}}
-    finally{setBusy(false);abortController=null}
-  }
-  test.addEventListener('click',testConnection);draw.addEventListener('click',start);stop.addEventListener('click',()=>abortController?.abort());
-  endpoint.addEventListener('change',()=>localStorage.setItem('pf_ai_endpoint',endpoint.value));model.addEventListener('change',()=>localStorage.setItem('pf_ai_model',model.value));provider.addEventListener('change',()=>localStorage.setItem('pf_ai_provider',provider.value));
-  endpoint.value=localStorage.getItem('pf_ai_endpoint')||endpoint.value;model.value=localStorage.getItem('pf_ai_model')||model.value;provider.value=localStorage.getItem('pf_ai_provider')||provider.value;
-  prompt.value='A tiny pixel-art wizard, centered, facing right, blue robe, purple hat, gold staff, transparent background';
 })();
 </script>
 </body>
